@@ -23,6 +23,12 @@ npm install yf-api-server --save
 
 [Click here,See the DEMO code](https://github.com/yfsoftcom/yf-api-server/blob/master/config.js)
 
+* mkdir logs
+
+    创建日志保存目录,修改目录可到config.js 中修改 log4js的相应配置
+```
+mkdir logs
+```
 
 #### 3.TEST
 
