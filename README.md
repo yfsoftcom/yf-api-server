@@ -1,12 +1,10 @@
 # yf-api-server
 
-## 1.OVERVIEW
- *** 
+#### 1.OVERVIEW
  
 > 一款灵活的api服务端
 
-## 2.INSTALL
-***
+#### 2.INSTALL
 
 * dowload the code
 
@@ -26,34 +24,34 @@ npm install yf-api-server --save
 [Click here,See the DEMO code](https://github.com/yfsoftcom/yf-api-server/blob/master/config.js)
 
 
-## 3.TEST
-***
+#### 3.TEST
 
 `
 npm test
 `
-## 4.RUN
-***
+#### 4.RUN
 
 建议运行环境：
 *nix,nodejs/io,mysql
 
 - 在应用入口代码中添加
 
-`
-	    var config = require('./config.js');
-	    var yfserver = require('yf-api-server');
-	    var app = yfserver(config);
-`
+```
+var config = require('./config.js');
 
-`
+var yfserver = require('yf-api-server');
+
+var app = yfserver(config);
+```
+
+
+```
 npm start
-`
+```
 
 **建议使用 postman 进行接口的 测试**
 
-## 5.DOCS：
-***
+#### 5.DOCS：
 
 
 
