@@ -1,6 +1,8 @@
 var Q = require('q');
 var _ = require('underscore');
 var E = require('../error.js');
+var hook = require('./hook.js');
+var async = require('async');
 
 function noMethodHandler(args){
     var deferred = Q.defer();
@@ -42,16 +44,43 @@ module.exports = function(bizModule){
         invoke:function(method,args,v){
             var handler = getFunction(method,v);
             var deferred = Q.defer();
-            handler(args).then(function(data){
-                //自定义的错误
-                if(0 > data.errno ){
-                    deferred.reject(data);
+
+            async.waterfall([
+                //执行前置hooklist
+                function(cb){
+                    hook.callHook('before_'+method,args).then(function(data){
+                        cb(null,data);
+                    }).catch(function(err){
+                        cb(err);
+                    });
+                },
+                function(arg1,cb){
+                    handler(args).then(function(data){
+                        //自定义的错误
+                        if(0 > data.errno ){
+                            cb(data);
+                        }
+                        cb(null,{"data":data});
+                    }).catch(function(err){
+                        if(err.errno > 0)
+                            err.errno = 0 - err.errno;
+                        cb(err);
+                    });
+                },
+                //执行后置hooklist
+                function(arg2,cb){
+                    hook.callHook('after_' + method,{input:args,result:arg2.data}).then(function(data){
+                        cb(null,arg2);
+                    }).catch(function(err){
+                        cb(err);
+                    });
                 }
-                deferred.resolve({"data":data});
-            }).catch(function(err){
-                if(err.errno > 0)
-                    err.errno = 0 - err.errno;
-                deferred.reject(err);
+            ],function(err,result){
+                if(err){
+                    deferred.reject(data);
+                }else{
+                    deferred.resolve(result);
+                }
             });
             return deferred.promise;
         }
