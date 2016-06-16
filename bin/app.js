@@ -80,8 +80,9 @@ server.on('uncaughtException', function (req, res, route, e) {
 });
 
 
+exports = module.exports = createApplication;
 
-module.exports = function(options){
+function createApplication(options){
     C = _.extend(C,options);
     return {
         start:function(){
@@ -92,8 +93,8 @@ module.exports = function(options){
         },
         setBizModules:function(modules){
             reflecter = reflecter(modules);
-        },
-        hook:hook
+        }
     }
-
 };
+
+exports.hook = hook;
