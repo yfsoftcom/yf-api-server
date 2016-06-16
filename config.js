@@ -1,7 +1,4 @@
-var dev = (function(){
-    console.log('DEV模式');
-    return 'DEV';
-})();
+var dev = 'DEV';
 var DEV_HOST = '192.168.1.218';
 var API_DBNAME = 'gr_api';                  //通用接口数据库
 
@@ -36,7 +33,7 @@ module.exports = {
     server:{
         port:dev == 'PRODUCT'?9001:8080
     },
-    defaultVersion:'0.0.2',
+    defaultVersion:'0.0.1',
     dev:dev,
     log4js: {
         appenders: [

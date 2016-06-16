@@ -77,7 +77,7 @@ module.exports = function(bizModule){
                 }
             ],function(err,result){
                 if(err){
-                    deferred.reject(data);
+                    deferred.reject(err);
                 }else{
                     deferred.resolve(result);
                 }

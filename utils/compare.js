@@ -43,7 +43,6 @@ function compare(req,res,next){
 
         if(Math.abs(delta/100/60) > 30){
             res.json(E.System.TIMEZONE_OVER);
-            res.send(200);
             return;
         }
     }
@@ -56,7 +55,6 @@ function compare(req,res,next){
         }catch(e){
             //传入的param不是JSON格式
             res.json(E.System.PARAM_IS_NOT_JSON);
-            res.send(200);
             return;
         }
     }
