@@ -100,3 +100,4 @@ function createApplication(options){
 
 exports.hook = hook;
 exports.job = job;
+exports.logger = L;
