@@ -8,6 +8,7 @@ var upload = require('../utils/upload.js');
 var analyse = require('../utils/analyse.js');
 var compare = require('../utils/compare.js');
 var reflecter = require('../utils/reflecter.js');
+var hook = require('../utils/hook.js');
 
 var server = restify.createServer({
     name:'yf_api_server',versions:[C.defaultVersion]
@@ -79,8 +80,9 @@ server.on('uncaughtException', function (req, res, route, e) {
 });
 
 
+exports = module.exports = createApplication;
 
-module.exports = function(options){
+function createApplication(options){
     C = _.extend(C,options);
     return {
         start:function(){
@@ -93,5 +95,6 @@ module.exports = function(options){
             reflecter = reflecter(modules);
         }
     }
-
 };
+
+exports.hook = hook;
