@@ -3,7 +3,7 @@ var Q = require('q');
 var C = require('../../config.js');
 var FastDBM = require('yf-fast-dbm');
 var M = FastDBM(C.db.api);
-var H = require('../../utils/hook.js');
+var H = require('../../bin/app.js').hook;
 M.foo = function(){
     var q = Q.defer();
     M.count({table:'api_app'}).then(function(c){
