@@ -9,6 +9,7 @@ var analyse = require('../utils/analyse.js');
 var compare = require('../utils/compare.js');
 var reflecter = require('../utils/reflecter.js');
 var hook = require('../utils/hook.js');
+var job = require('../utils/job.js');
 
 var server = restify.createServer({
     name:'yf_api_server',versions:[C.defaultVersion]
@@ -98,3 +99,4 @@ function createApplication(options){
 };
 
 exports.hook = hook;
+exports.job = job;
