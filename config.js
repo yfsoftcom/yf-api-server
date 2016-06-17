@@ -1,19 +1,11 @@
-var dev = 'DEV';
-var DEV_HOST = '192.168.1.218';
-var API_DBNAME = 'gr_api';                  //通用接口数据库
+var k = require('./key.js');
 
 var getDbConfig = function(option){
     var originConfig = {
-        host:(function(mode){
-            switch(mode){
-                case 'DEV':
-                    return DEV_HOST;
-            }
-        })(dev),
+        host: 'localhost',
         port:3306,
-        //database:'gr_erp',
-        username:'dbadmin',
-        password:'87252798',
+        username:'root',
+        password:'',
         debug:false,
         pool:{
             connectionLimit:10,
@@ -21,20 +13,27 @@ var getDbConfig = function(option){
             waitForConnections:true
         }
     };
-    for(var k in option){
-        originConfig[k] = option[k];
+    for(var key in k.db){
+        originConfig[key] = k.db[key];
+    }
+    for(var key in option){
+        originConfig[key] = option[key];
     }
     return originConfig;
 };
 module.exports = {
-    db:{
-        api:getDbConfig({database:API_DBNAME})
-    },
+    db:(function(database){
+        var _dbs = {};
+        for(var d in database){
+            _dbs[d] = getDbConfig({database:database[d]});
+        }
+        return _dbs;
+    })(k.database),
     server:{
-        port:dev == 'PRODUCT'?9001:8080
+        port: k.dev == 'PRODUCT'?9001:8080
     },
     defaultVersion:'0.0.1',
-    dev:dev,
+    dev: k.dev,
     log4js: {
         appenders: [
             { type: 'console' },{
