@@ -14,8 +14,6 @@ function versionUndefinedHandler(args){
     deferred.reject(E.System.VERSION_UNDEFINED);
     return deferred.promise;
 }
-
-
 module.exports = function(bizModule){
     var getFunction = function(method,v){
         if(!_.has(bizModule,v)){

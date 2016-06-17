@@ -5,11 +5,10 @@ var Q = require('q');
 var L = require('../logger.js');
 var E = require('../error.js');
 var upload = require('../utils/upload.js');
-var analyse = require('../utils/analyse.js');
-var compare = require('../utils/compare.js');
 var reflecter = require('../utils/reflecter.js');
 var hook = require('../utils/hook.js');
-var job = require('../utils/job.js');
+
+var FastDBM = require('yf-fast-dbm');
 
 var server = restify.createServer({
     name:'yf_api_server',versions:[C.defaultVersion]
@@ -18,17 +17,32 @@ var server = restify.createServer({
     //key:fs.readFileSync('./bin/server.key'),
     //passphrase:''
 });
-server.use(restify.pre.userAgentConnection());          // work around for curl
-server.use(restify.acceptParser(server.acceptable));
-server.use(restify.queryParser());
-server.use(restify.bodyParser());
-//server.use(restify.CORS());
 
-//统计api请求的记录的
-server.use(analyse);
 
-//验证api请求的合法性
-server.use(compare);
+
+function init(config){
+    server.use(restify.pre.userAgentConnection());          // work around for curl
+    server.use(restify.acceptParser(server.acceptable));
+    server.use(restify.queryParser());
+    server.use(restify.bodyParser());
+    //server.use(restify.CORS());
+
+
+
+    var M = FastDBM(config.db.api);
+    //统计api请求的记录的
+    var analyse = require('../utils/analyse.js')(M);
+    server.use(analyse);
+
+    //验证api请求的合法性
+    var compare = require('../utils/compare.js')(config);
+    server.use(compare);
+
+    var job = require('../utils/job.js')(M,reflecter);
+    exports.job = job;
+    global.C = config;
+}
+
 
 function api(req, res,next){
     res.setHeader('Access-Control-Allow-Origin','*');
@@ -87,6 +101,7 @@ function createApplication(options){
     C = _.extend(C,options);
     return {
         start:function(){
+            init(C);
             server.listen(C.server.port||8080, function() {
                 L.trace('在 %s 模式下运行',C.dev);
                 L.trace('%s listening at %s', server.name, server.url);
@@ -97,7 +112,5 @@ function createApplication(options){
         }
     }
 };
-
 exports.hook = hook;
-exports.job = job;
 exports.logger = L;
