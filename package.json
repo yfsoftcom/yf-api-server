@@ -1,6 +1,6 @@
 {
   "name": "yf-api-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./bin/app.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/*.test.js",
