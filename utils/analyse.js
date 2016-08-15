@@ -7,7 +7,6 @@ var async = require('async');
 var E = require('../error');
 var _ = require('underscore');
 var kit = require('./kit.js');
-var L = require('../logger.js');
 var cache = require('memory-cache');
 
 module.exports = function(M){
@@ -34,9 +33,7 @@ module.exports = function(M){
                 data.param = p.replace(/'/g,'"');
             }
             //保存调用api的数据
-            M.create({table:'api_record',row:data}).catch(function(err){
-                L.error(err);
-            });
+            M.create({table:'api_record',row:data});
             //验证key和权限
             var appkey = data.appkey;
             //appkey是否在待审核的列表中?
@@ -88,11 +85,9 @@ module.exports = function(M){
                     next();return;
                 }
                 if(err === 1){
-                    rsp.json(E.System.AUTH_ERROR);
-                    L.error(E.System.AUTH_ERROR);
+                    throw new Error(E.System.AUTH_ERROR);
                 } else if(err === 2) {
-                    rsp.json(E.System.ROOT_ERROR);
-                    L.error(E.System.ROOT_ERROR);
+                    throw new Error(E.System.ROOT_ERROR);
                 }else{
                     throw new Error(err);
                 }

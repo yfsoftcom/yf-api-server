@@ -16,6 +16,8 @@ function versionUndefinedHandler(args){
 }
 module.exports = function(bizModule){
     var getFunction = function(method,v){
+        console.log(method);
+        console.log(v);
         if(!_.has(bizModule,v)){
             return versionUndefinedHandler;
         }

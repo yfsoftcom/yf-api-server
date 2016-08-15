@@ -2,7 +2,7 @@ var restify = require('restify');
 var C = require('../config.js');
 var _ = require('underscore');
 var Q = require('q');
-var L = require('../logger.js');
+var L = require('../utils/logger.js');
 var E = require('../error.js');
 var upload = require('../utils/upload.js');
 var reflecter = require('../utils/reflecter.js');
@@ -27,7 +27,8 @@ function init(config){
     server.use(restify.bodyParser());
     //server.use(restify.CORS());
 
-
+    L = L(config);
+    exports.logger = L;
 
     var M = FastDBM(config.db.api);
     //统计api请求的记录的
@@ -41,6 +42,13 @@ function init(config){
     var job = require('../utils/job.js')(M,reflecter);
     exports.job = job;
     global.C = config;
+
+
+    server.post({path : '/api' , version: C.defaultVersion} , api);
+    //服务的相应情况,用于其它系统对服务进行检测,查看服务的运行状况
+    server.get('/test',test);
+
+    server.post('/upload', upload);
 }
 
 
@@ -79,19 +87,18 @@ function test(req, res, next) {
     next();
 }
 
-server.post({path : '/api' , version: C.defaultVersion} , api);
-//服务的相应情况,用于其它系统对服务进行检测,查看服务的运行状况
-server.get('/test',test);
-
-server.post('/upload', upload);
 /**
  * 捕获未知的异常信息
  */
 server.on('uncaughtException', function (req, res, route, e) {
+  if(_.has(e,"errno")){
+    res.json(e);
+  }else{
     E.System.UNCAUGHT_ERROR.error = e.message || 'unknown error!';
     res.json(E.System.UNCAUGHT_ERROR);
     L.error(E.System.UNCAUGHT_ERROR);
-    return (false);//强制不允许报错
+  }
+  return (false);//强制不允许报错
 });
 
 
@@ -113,4 +120,3 @@ function createApplication(options){
     }
 };
 exports.hook = hook;
-exports.logger = L;

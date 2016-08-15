@@ -14,7 +14,11 @@ module.exports = {
                 category: 'normal'
             }
         ],
-        replaceConsole: true
+        replaceConsole: true,
+        levels:{
+            dateFileLog: 'debug',
+            console: 'errno'
+        }
     },
     qiniu:{
         bucket:'yfdocument',

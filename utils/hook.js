@@ -3,9 +3,7 @@
  * 将业务开始和完成添加钩子的支持
  **/
 var Q = require('q');
-var C = require('../config');
 var _ = require('underscore');
-var L = require('../logger.js');
 var E = require('../error');
 var async = require('async');
 
@@ -15,14 +13,12 @@ module.exports = (function(){
     function addHook(hookName,hookHandler,priority){
         priority = priority || 100;
         if(!_.isFunction(hookHandler)){
-            L.error('传入的钩子为非函数');
             return false;
         }
         var _list = _hooks[hookName] || [];
         _list.push({priority:priority,handler:hookHandler});
         _list = _.sortBy(_list,'priority');
         _hooks[hookName] = _list;
-        L.info(_hooks);
         return true;
     };
 
