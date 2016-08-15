@@ -63,16 +63,13 @@ module.exports = function(req, res) {
     console.log(t);
     if(t!='application/zip' && t!= 'application/x-zip-compressed' && t!='application/octet-stream'){
         res.json(E.System.FILE_TYPE_REJECT);
-        res.send(200);
         return;
     }
     if(s>100*1024*1024){
         res.json(E.System.FILE_TOO_LARGE);
-        res.send(200);
         return;
     }
     //copy(f.path,'uploads/'+f.name);
-    //TODO:上传到七牛
     syncQiniu(n, f.path).then(function(data){
         res.json({errno:0,data:data});
     }).catch(function(err){

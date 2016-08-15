@@ -1,4 +1,6 @@
 'use strict';
-module.exports = {
-    common:require('./common')
+module.exports = function(C){
+    return {
+        common:require('./comCmon')(C),
+    };
 };

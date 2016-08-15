@@ -3,10 +3,9 @@
  * 将业务开始和完成添加钩子的支持
  **/
 var Q = require('q');
-var config = require('../config');
 var _ = require('underscore');
-var L = require('../logger.js');
 var E = require('../error');
+var async = require('async');
 
 module.exports = (function(){
     //{"":[],"":[]}
@@ -14,14 +13,21 @@ module.exports = (function(){
     function addHook(hookName,hookHandler,priority){
         priority = priority || 100;
         if(!_.isFunction(hookHandler)){
-            L.error('传入的钩子为非函数');
-            return;
+            return false;
         }
         var _list = _hooks[hookName] || [];
         _list.push({priority:priority,handler:hookHandler});
         _list = _.sortBy(_list,'priority');
         _hooks[hookName] = _list;
-        L.info(_hooks);
+        return true;
+    };
+
+    function addAfterHook(hookName,hookHandler,priority){
+        return addHook('after_' + hookName,hookHandler,priority);
+    };
+
+    function addBeforeHook(hookName,hookHandler,priority){
+        return addHook('before_' + hookName,hookHandler,priority);
     }
 
     /**
@@ -29,22 +35,39 @@ module.exports = (function(){
      * @param hookName
      * @returns {Function}
      */
-    function callHook(hookName,input,output,next){
+    function callHook(hookName,input){
         var _list = _hooks[hookName] || [];
+        var q = Q.defer();
         if(_.isEmpty(_list)){
-            return function(input,output,next){
-                next();
-            }
+            q.resolve({});
+            return q.promise;
         }
-        //TODO:修改一下，是否需要将参数进行修改后，传入到之后的函数处理？
         //for()
-        return function(input,output,next){
-            //
-
-        }
+        async.eachSeries(_list,function(n,cb){
+                var h = n.handler(input);
+                if(h.then){
+                    h.then(function(data){
+                        cb(null,data);
+                    }).catch(function(err){
+                        cb(err);
+                    });
+                }else{
+                    cb(null,h);
+                }
+            }
+            ,function(err,result){
+                if(err){
+                    L.error(err);
+                    q.reject(err);
+                }else{
+                    q.resolve(result);
+                }
+            });
+        return q.promise;
     }
     return {
-        addHook:addHook,
+        addBeforeHook:addBeforeHook,
+        addAfterHook:addAfterHook,
         callHook:callHook
     }
 })();
