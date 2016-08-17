@@ -17,14 +17,14 @@ function logApiRecord(M,data){
   }
   api_record.push(data);
   //缓存100条数据
-  if(api_record.length >= 1000){
+  if(api_record.length >= 200){
     //保存调用api的数据
     M.create({table:'api_record',row:data});
     //clear;
     api_record = [];
   }
 
-  cache.set('api_record',api_record);
+  cache.put('api_record',api_record);
 }
 
 module.exports = function(M){
