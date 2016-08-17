@@ -83,7 +83,6 @@ function api(req, res,next){
         L.error('method:' + method + '@' + v + ' At:' + timestamp);
         L.error('param:' + JSON.stringify(param));
         L.error('错误执行: '+ JSON.stringify(error));
-        }
     }).finally(function(){
         next();
     });
