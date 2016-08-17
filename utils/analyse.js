@@ -9,6 +9,24 @@ var _ = require('underscore');
 var kit = require('./kit.js');
 var cache = require('memory-cache');
 
+
+function logApiRecord(M,data){
+  var api_record = cache.get('api_record');
+  if(!api_record){
+    api_record = [];
+  }
+  api_record.push(data);
+  //缓存100条数据
+  if(api_record.length >= 1000){
+    //保存调用api的数据
+    M.create({table:'api_record',row:data});
+    //clear;
+    api_record = [];
+  }
+
+  cache.set('api_record',api_record);
+}
+
 module.exports = function(M){
         return function(req,rsp,next){
             var path = req.route.path;
@@ -33,7 +51,7 @@ module.exports = function(M){
                 data.param = p.replace(/'/g,'"');
             }
             //保存调用api的数据
-            M.create({table:'api_record',row:data});
+            logApiRecord(M,data);
             //验证key和权限
             var appkey = data.appkey;
             //appkey是否在待审核的列表中?
