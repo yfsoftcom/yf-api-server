@@ -67,7 +67,11 @@ function api(req, res,next){
             "starttime":timestamp,
             "data":result.data};
         res.json(success);
-        L.trace('正确执行: '+ JSON.stringify(success));
+        if(C){
+          if(C.debug === true){
+              L.trace('正确执行: '+ JSON.stringify(success));
+          }
+        }
     }).catch(function(err){
         var error = {"errno":err.errno==undefined?-999:err.errno,
             "code":err.code,
@@ -76,7 +80,11 @@ function api(req, res,next){
             "starttime":timestamp,
             "error":err}
         res.json(error);
-        L.error('错误执行: '+ JSON.stringify(error));
+        if(C){
+          if(C.debug === true){
+              L.error('错误执行: '+ JSON.stringify(error));
+          }
+        }
     }).finally(function(){
         next();
     });
