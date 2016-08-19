@@ -17,9 +17,12 @@ function logApiRecord(M,data){
   }
   api_record.push(data);
   //缓存100条数据
-  if(api_record.length >= 200){
+  if(api_record.length >= 50){
     //保存调用api的数据
-    M.create({table:'api_record',row:data});
+    M.create({table:'api_record',row:data}).catch(function(e){
+      console.log("[API_RECORD:ERROR]");
+      console.log(e);
+    });
     //clear;
     api_record = [];
   }
