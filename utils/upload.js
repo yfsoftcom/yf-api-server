@@ -29,7 +29,6 @@ function uploadFile(uptoken, key, localFile) {
                 key:key
             });
             // 上传成功， 处理返回值
-            console.log(ret.hash, ret.key, ret.persistentId);
         } else {
             // 上传失败， 处理返回代码
             var e = E.System.QINIU_SYNC_ERROR;
@@ -55,12 +54,9 @@ function syncQiniu(filename,filepath){
 module.exports = function(req, res) {
     res.setHeader('Access-Control-Allow-Origin','*');
     var f = req.files.file;
-    console.log(f);
     var t = f.type;
     var n = f.name;
     var s = f.size;
-
-    console.log(t);
     if(t!='application/zip' && t!= 'application/x-zip-compressed' && t!='application/octet-stream'){
         res.json(E.System.FILE_TYPE_REJECT);
         return;
