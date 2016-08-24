@@ -275,3 +275,11 @@ pm2 logs
 ![pm2 logs](http://upload-images.jianshu.io/upload_images/1449977-57ad8df18e055c0f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 欢迎拍砖~~
+
+### 6.Demo
+
+我部署了一个demo项目，代码在这里 [https://github.com/yfsoftcom/yf-demo-api](https://github.com/yfsoftcom/yf-demo-api)
+
+请笑纳~
+
+![测试的](http://upload-images.jianshu.io/upload_images/1449977-b787b6f88cfcc4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
