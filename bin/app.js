@@ -7,7 +7,8 @@ var E = require('../error.js');
 var upload = require('../utils/upload.js');
 var reflecter = require('../utils/reflecter.js');
 var hook = require('../utils/hook.js');
-
+var initTable = require('../utils/initTable.js');
+var async = require('async');
 var FastDBM = require('yf-fast-dbm');
 
 var server = restify.createServer({
@@ -47,6 +48,20 @@ function init(config){
     server.post({path : '/api' , version: C.defaultVersion} , api);
     //服务的相应情况,用于其它系统对服务进行检测,查看服务的运行状况
     server.get('/test',test);
+
+    //初始化报表
+    server.get('/init',function(req, res, next) {
+
+      //创建系统需要的表结构
+      initTable(M).exec().then(function(data){
+        res.json({"errno":0,"timestamp": _.now(),"message":"table init ok!"});
+      }).catch(function(err){
+        res.json({"errno":0,"timestamp": _.now(),"message":"table init error!"});
+      }).finally(function(){
+        next();
+      });
+
+    });
 
     server.post('/upload', upload);
 }
@@ -113,6 +128,9 @@ exports = module.exports = createApplication;
 function createApplication(options){
     C = _.extend(C,options);
     return {
+        initTable:function(){
+
+        },
         start:function(){
             init(C);
             server.listen(C.server.port||8080, function() {
