@@ -1,43 +1,9 @@
-var dev = (function(){
-    console.log('DEV模式');
-    return 'DEV';
-})();
-var DEV_HOST = '192.168.1.218';
-var API_DBNAME = 'gr_api';                  //通用接口数据库
-
-var getDbConfig = function(option){
-    var originConfig = {
-        host:(function(mode){
-            switch(mode){
-                case 'DEV':
-                    return DEV_HOST;
-            }
-        })(dev),
-        port:3306,
-        //database:'gr_erp',
-        username:'dbadmin',
-        password:'87252798',
-        debug:false,
-        pool:{
-            connectionLimit:10,
-            queueLimit:0,
-            waitForConnections:true
-        }
-    };
-    for(var k in option){
-        originConfig[k] = option[k];
-    }
-    return originConfig;
-};
 module.exports = {
-    db:{
-        api:getDbConfig({database:API_DBNAME})
-    },
     server:{
-        port:dev == 'PRODUCT'?9001:8080
+        port: 8080
     },
-    defaultVersion:'0.0.2',
-    dev:dev,
+    defaultVersion:'0.0.1',
+    dev: 'DEV',
     log4js: {
         appenders: [
             { type: 'console' },{
@@ -48,7 +14,11 @@ module.exports = {
                 category: 'normal'
             }
         ],
-        replaceConsole: true
+        replaceConsole: true,
+        levels:{
+            dateFileLog: 'debug',
+            console: 'errno'
+        }
     },
     qiniu:{
         bucket:'yfdocument',
