@@ -14,10 +14,9 @@ function versionUndefinedHandler(args){
     deferred.reject(E.System.VERSION_UNDEFINED);
     return deferred.promise;
 }
-
-
 module.exports = function(bizModule){
     var getFunction = function(method,v){
+        console.log("[CALL METHOD]:" + method + "@" + v);
         if(!_.has(bizModule,v)){
             return versionUndefinedHandler;
         }
@@ -77,7 +76,7 @@ module.exports = function(bizModule){
                 }
             ],function(err,result){
                 if(err){
-                    deferred.reject(data);
+                    deferred.reject(err);
                 }else{
                     deferred.resolve(result);
                 }
