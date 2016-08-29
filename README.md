@@ -196,6 +196,18 @@ async.parallel({
 
 ```
 ### 4.Run
+安装依赖模块
+`
+$ npm install async
+`
+`
+$ npm install underscore
+`
+`
+$ npm install q
+`
+
+启动yf-api-server
 `
 $ node app.js
 `
