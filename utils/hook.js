@@ -57,7 +57,6 @@ module.exports = (function(){
             }
             ,function(err,result){
                 if(err){
-                    L.error(err);
                     q.reject(err);
                 }else{
                     q.resolve(result);
